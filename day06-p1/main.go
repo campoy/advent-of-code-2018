@@ -14,18 +14,19 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// fmt.Println(b)
+	fmt.Println(b)
 
 	maxArea := 0
+	var maxPos pos
 	for _, f := range b.finitePoints() {
-		fmt.Println(f)
-		// a := b.area(f)
-		// if a > maxArea {
-		// 	maxArea = a
-		// }
+		a := b.area(f)
+		if a > maxArea {
+			maxArea = a
+			maxPos = f
+		}
 	}
 
-	fmt.Println(maxArea)
+	fmt.Println(maxPos, maxArea)
 }
 
 type pos struct{ x, y int }
@@ -114,20 +115,20 @@ func dist(p, q pos) int {
 func (b board) finitePoints() []pos {
 	var fs []pos
 	for p := range b {
-		minX, minY, maxX, maxY := true, true, true, true
+		var xy, XY, xY, Xy bool
 		for q := range b {
-			if p.x > q.x {
-				minX = false
-			} else if p.x < q.x {
-				maxX = false
-			}
-			if p.y > q.y {
-				minY = false
-			} else if p.y < q.y {
-				maxY = false
+			switch {
+			case p.x > q.x && p.y > q.y:
+				xy = true
+			case p.x > q.x && p.y < q.y:
+				xY = true
+			case p.x < q.x && p.y > q.y:
+				Xy = true
+			case p.x < q.x && p.y < q.y:
+				XY = true
 			}
 		}
-		if !(minX || minY || maxX || maxY) {
+		if xy && xY && Xy && XY {
 			fs = append(fs, p)
 		}
 	}
