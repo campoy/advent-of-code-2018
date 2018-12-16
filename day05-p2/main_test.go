@@ -5,23 +5,6 @@ import (
 	"testing"
 )
 
-func TestTrim(t *testing.T) {
-	tt := []struct {
-		in  string
-		u   byte
-		out string
-	}{
-		{"aAbBcC", 'a', "bBcC"},
-		{"aAbBcC", 'b', "aAcC"},
-		{"aAbBcC", 'c', "aAbB"},
-	}
-	for _, tc := range tt {
-		if out := trim(tc.in, tc.u); out != tc.out {
-			t.Fatalf("expected trim to be %q; got %q", tc.out, out)
-		}
-	}
-}
-
 func TestStep(t *testing.T) {
 	tt := []struct {
 		in, out string
