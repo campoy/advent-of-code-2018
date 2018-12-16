@@ -112,6 +112,15 @@ func dist(p, q pos) int {
 	return int(math.Abs(float64(p.x-q.x)) + math.Abs(float64(p.y-q.y)))
 }
 
+// finitePoints returns all points that are surrounded by other points.
+//
+// dist(a, b) = abs(a.x - b.x) + abs(a.y - b.y)
+//
+// p is surrounded if there are 4 points a, b, c, and d for which
+// - a.x > p.x && a.y > p.y
+// - b.x < p.x && b.y < p.y
+// - c.x > p.x && c.y < p.y
+// - d.x < p.x && d.y > p.y
 func (b board) finitePoints() []pos {
 	var fs []pos
 	for p := range b {
