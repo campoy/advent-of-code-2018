@@ -68,8 +68,7 @@ func max(vs []int) int {
 
 type node struct {
 	name        string
-	deps        []*node
-	waitingFor  int
+	deps        int
 	follows     []*node
 	doneAt      int
 	availableAt int
@@ -79,24 +78,13 @@ func (n *node) duration() int { return int(n.name[0]) - 'A' + 1 }
 
 func (n *node) startAt(t, baseDuration int) int {
 	n.doneAt = t + n.duration() + baseDuration
-
 	for _, f := range n.follows {
-		f.oneDepDone()
-	}
-	return n.doneAt
-}
-
-func (n *node) oneDepDone() {
-	n.waitingFor--
-	if n.waitingFor > 0 {
-		return
-	}
-
-	for _, d := range n.deps {
-		if n.availableAt < d.doneAt {
-			n.availableAt = d.doneAt
+		f.deps--
+		if f.availableAt < n.doneAt {
+			f.availableAt = n.doneAt
 		}
 	}
+	return n.doneAt
 }
 
 type graph map[string]*node
@@ -124,9 +112,8 @@ func (g graph) addDep(a, b string) {
 	na := g.node(a)
 	nb := g.node(b)
 	na.follows = append(na.follows, nb)
-	nb.deps = append(nb.deps, na)
 	nb.availableAt = -1
-	nb.waitingFor++
+	nb.deps++
 }
 
 func (g graph) node(name string) *node {
@@ -150,10 +137,9 @@ func (h heap) String() string {
 	h.sort()
 	names := make([]string, 0, len(h))
 	for _, n := range h {
-		if n.waitingFor > 0 {
-			continue
+		if n.deps == 0 {
+			names = append(names, fmt.Sprintf("%s [%d @%d]", n.name, n.deps, n.availableAt))
 		}
-		names = append(names, fmt.Sprintf("%s [%d @%d]", n.name, n.waitingFor, n.availableAt))
 	}
 	return strings.Join(names, " | ")
 }
@@ -171,7 +157,7 @@ func (h *heap) pop() *node {
 
 func (h heap) sort() {
 	sort.Slice(h, func(i, j int) bool {
-		di, dj := h[i].waitingFor, h[j].waitingFor
+		di, dj := h[i].deps, h[j].deps
 		if di < dj {
 			return true
 		} else if dj < di {
