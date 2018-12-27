@@ -14,7 +14,7 @@ func main() {
 	}
 
 	n := readNode(nums)
-	fmt.Println(n.sumMetadata())
+	fmt.Println(n.value())
 }
 
 type node struct {
@@ -36,10 +36,16 @@ func readNode(nums *aoc.IntSeq) node {
 	return n
 }
 
-func (n node) sumMetadata() int {
-	sum := aoc.Sum(n.metadata)
-	for _, c := range n.children {
-		sum += c.sumMetadata()
+func (n node) value() int {
+	if len(n.children) == 0 {
+		return aoc.Sum(n.metadata)
+	}
+	sum := 0
+	for _, m := range n.metadata {
+		if m == 0 || m > len(n.children) {
+			continue
+		}
+		sum += n.children[m-1].value()
 	}
 	return sum
 }
