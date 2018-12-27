@@ -8,6 +8,8 @@ import (
 	"os"
 	"sort"
 	"strings"
+
+	"github.com/campoy/advent-of-code-2018/aoc"
 )
 
 func main() {
@@ -24,46 +26,20 @@ func main() {
 
 	workers := make([]int, *numWorkers)
 	for len(h) > 0 {
-		fmt.Println("-----------")
-		fmt.Printf("heap: %v\n", h)
-		fmt.Printf("workers: %v\n", workers)
-
 		n := h.pop()
 		follows := make([]string, 0, len(n.follows))
 		for _, f := range n.follows {
 			follows = append(follows, f.name)
 		}
-		fmt.Printf("%s %v\n", n.name, follows)
-		w, t := minArg(workers)
+
+		w, t := aoc.MinArg(workers)
 		if t < n.availableAt {
 			t = n.availableAt
 		}
 		workers[w] = n.startAt(t, *baseDuration)
-		fmt.Printf("worker %d starting task %s at %d, will be done at %d\n", t, n.name, w, workers[w])
 	}
 
-	fmt.Println(max(workers))
-}
-
-func minArg(vs []int) (i, v int) {
-	minI, minV := 0, vs[0]
-	for i, v := range vs {
-		if minV > v {
-			minV = v
-			minI = i
-		}
-	}
-	return minI, minV
-}
-
-func max(vs []int) int {
-	m := 0
-	for _, v := range vs {
-		if m < v {
-			m = v
-		}
-	}
-	return m
+	fmt.Println(aoc.Max(workers))
 }
 
 type node struct {

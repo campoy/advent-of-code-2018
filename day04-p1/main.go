@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/campoy/advent-of-code-2018/aoc"
 )
 
 type event struct {
@@ -110,14 +112,6 @@ func findGuard(events []event) (id, minute int) {
 		}
 	}
 
-	maxMinute := 0
-	maxCount := 0
-	for i, c := range minutes {
-		if c > maxCount {
-			maxMinute = i
-			maxCount = c
-		}
-	}
-
+	maxMinute, _ := aoc.MaxArg(minutes...)
 	return sleeper, maxMinute
 }
