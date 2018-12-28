@@ -1,18 +1,18 @@
 package aoc
 
 const (
-	maxUint = ^uint(0)
-	minUint = 0
-	maxInt  = int(maxUint >> 1)
-	minInt  = -maxInt - 1
+	MaxUint = ^uint(0)
+	MinUint = 0
+	MaxInt  = int(MaxUint >> 1)
+	MinInt  = -MaxInt - 1
 )
 
 func lt(i, j int) bool            { return i < j }
-func Min(vs ...int) int           { return top(vs, lt, maxInt) }
+func Min(vs ...int) int           { return top(vs, lt, MaxInt) }
 func MinArg(vs ...int) (i, v int) { return topArg(vs, lt) }
 
 func gt(i, j int) bool            { return i > j }
-func Max(vs ...int) int           { return top(vs, gt, minInt) }
+func Max(vs ...int) int           { return top(vs, gt, MinInt) }
 func MaxArg(vs ...int) (i, v int) { return topArg(vs, gt) }
 
 func top(vs []int, less func(int, int) bool, z int) int {
